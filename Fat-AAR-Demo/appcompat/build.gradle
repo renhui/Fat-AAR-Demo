@@ -1,0 +1,96 @@
+plugins {
+    id 'com.android.library'
+}
+apply plugin: 'com.kezong.fat-aar'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+afterEvaluate {
+    // for app test, copy the final aar to application libs
+    android.libraryVariants.all { variant ->
+        File outputFile = variant.outputs.first().outputFile
+        tasks.named("assemble${variant.name.capitalize()}").configure {
+            doLast {
+                copy {
+                    from outputFile
+                    into "../app/libs"
+                    rename outputFile.name, "app_compat_1.0.0.aar"
+                }
+            }
+        }
+    }
+}
+
+fataar {
+    /**
+     * If transitive is true, local jar module and remote library's dependencies will be embed. (local aar module does not support)
+     * If transitive is false, just embed first level dependency
+     * Default value is false
+     * @since 1.3.0
+     */
+    transitive = true
+}
+
+dependencies {
+    embed (name:'common-1.1.1',ext:'jar')
+    embed (name:'core_runtime-1.1.1',ext:'aar')
+    embed (name:'lifecycle-common-1.1.1',ext:'jar')
+    embed (name:'livedata-1.1.1',ext:'aar')
+    embed (name:'livedata-core-1.1.1',ext:'aar')
+    embed (name:'lifecycle_runtime-1.1.1',ext:'aar')
+    embed (name:'viewmodel-1.1.1',ext:'aar')
+    embed (name:'animated-vector-drawable-28.0.0', ext:'aar')
+    embed (name:'appcompat-v7-28.0.0',ext:'aar')
+    embed (name:'asynclayoutinflater-28.0.0',ext:'aar')
+    embed (name:'collections-28.0.0',ext:'jar')
+    embed (name:'coordinatorlayout-28.0.0',ext:'aar')
+    embed (name:'cursoradapter-28.0.0',ext:'aar')
+    embed (name:'customview-28.0.0',ext:'aar')
+    embed (name:'documentfile-28.0.0',ext:'aar')
+    embed (name:'drawerlayout-28.0.0',ext:'aar')
+    embed (name:'interpolator-28.0.0',ext:'aar')
+    embed (name:'loader-28.0.0',ext:'aar')
+    embed (name:'localbroadcastmanager-28.0.0',ext:'aar')
+    embed (name:'print-28.0.0',ext:'aar')
+    embed (name:'recyclerview-v7-28.0.0',ext:'aar')
+    embed (name:'slidingpanelayout-28.0.0',ext:'aar')
+    embed (name:'support-annotations-28.0.0',ext:'jar')
+    embed (name:'support-compat-28.0.0',ext:'aar')
+    embed (name:'support-core-utils-28.0.0',ext:'aar')
+    embed (name:'support-fragment-28.0.0',ext:'aar')
+    embed (name:'support-vector-drawable-28.0.0',ext:'aar')
+    embed (name:'swiperefreshlayout-28.0.0',ext:'aar')
+    embed (name:'versionedparcelable-28.0.0',ext:'aar')
+    embed (name:'viewpager-28.0.0',ext:'aar')
+    embed (name:'transition-28.0.0',ext:'aar')
+}

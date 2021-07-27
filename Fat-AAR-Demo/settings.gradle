@@ -1,0 +1,3 @@
+include ':appcompat'
+include ':app'
+rootProject.name = "Fat-AAR-Demo"
